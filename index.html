@@ -2,241 +2,193 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#00B4D8">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#40E0D0">
 <title>Dulces Aromas POS</title>
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="app" class="app">
+<div id="toast"></div>
 
-<header class="header">
-<h1>🌸 Dulces Aromas</h1>
-<div id="header-date" class="header-date"></div>
-</header>
+<!-- NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-module="dashboard" onclick="navigateTo('dashboard')">🏠<span>Inicio</span></button>
+  <button class="nav-btn" data-module="venta" onclick="navigateTo('venta')">🛒<span>Vender</span></button>
+  <button class="nav-btn" data-module="productos" onclick="navigateTo('productos')">📦<span>Productos</span></button>
+  <button class="nav-btn" data-module="inventario" onclick="navigateTo('inventario')">📊<span>Stock</span></button>
+  <button class="nav-btn" data-module="ventas" onclick="navigateTo('ventas')">💰<span>Ventas</span></button>
+  <button class="nav-btn" data-module="clientes" onclick="navigateTo('clientes')">👥<span>Clientes</span></button>
+  <button class="nav-btn" data-module="deudas" onclick="navigateTo('deudas')">📝<span>Fiados</span></button>
+  <button class="nav-btn" data-module="catalogo" onclick="navigateTo('catalogo')">🌸<span>Catálogo</span></button>
+</nav>
 
+<!-- MAIN -->
 <main class="main">
 
+<!-- DASHBOARD -->
 <div id="mod-dashboard" class="module active">
-<div class="card">
-<h2>Resumen del Dia</h2>
-<div class="stats-grid">
-<div class="stat-card" onclick="navigateTo('ventas')">
-<div id="dash-ventas" class="stat-value">$0</div>
-<div class="stat-label">Ventas Hoy</div>
-</div>
-<div class="stat-card" onclick="navigateTo('inventario')">
-<div id="dash-stock" class="stat-value warning">0</div>
-<div class="stat-label">Stock Bajo</div>
-</div>
-<div class="stat-card" onclick="navigateTo('deudas')">
-<div id="dash-deudas" class="stat-value warning">0</div>
-<div class="stat-label">Cuotas Vencidas</div>
-</div>
-</div>
-</div>
-<div class="card">
-<h3>Acciones Rapidas</h3>
-<button class="btn" onclick="navigateTo('venta')">🛒 Nueva Venta</button>
-<button class="btn btn-secondary" onclick="navigateTo('productos')">➕ Agregar Producto</button>
-<button class="btn btn-secondary" onclick="navigateTo('clientes')">👤 Nuevo Cliente</button>
-<button class="btn btn-secondary" onclick="navigateTo('catalogo')">📖 Catalogo Web</button>
-</div>
-<div class="card">
-<h3>Negocio</h3>
-<button class="btn btn-secondary" onclick="exportarBackup()">💾 Exportar Backup</button>
-<button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">📥 Importar Backup</button>
-<input type="file" id="import-file" accept=".json" style="display:none" onchange="importarBackup(this)">
-<button class="btn btn-danger" onclick="resetApp()">🗑️ Borrar Todo</button>
-</div>
+  <div class="header"><h1>🌸 Dulces Aromas</h1><span id="header-date"></span></div>
+  <div class="dash-cards">
+    <div class="dash-card" onclick="navigateTo('ventas')"><div class="dash-label">Ventas Hoy</div><div class="dash-value" id="dash-ventas">$0</div></div>
+    <div class="dash-card" onclick="navigateTo('inventario')"><div class="dash-label">Stock Bajo</div><div class="dash-value" id="dash-stock">0</div></div>
+    <div class="dash-card" onclick="navigateTo('deudas')"><div class="dash-label">Deudas Vencidas</div><div class="dash-value" id="dash-deudas">0</div></div>
+  </div>
+  <div class="dash-actions">
+    <button class="btn-primary" onclick="navigateTo('venta')">🛒 Nueva Venta</button>
+    <button class="btn-secondary" onclick="exportarBackup()">💾 Exportar Backup</button>
+    <button class="btn-secondary" onclick="document.getElementById('import-file').click()">📥 Importar Backup</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importarBackup(this)">
+    <button class="btn-danger" onclick="resetApp()">🗑️ Borrar Todo</button>
+  </div>
 </div>
 
+<!-- VENTA -->
 <div id="mod-venta" class="module">
-<div class="search-box">
-<input type="text" id="v-buscar" placeholder="Buscar producto..." oninput="buscarProducto()">
-</div>
-<div class="tabs">
-<button class="tab active" data-cat="todos" onclick="filtrarCat('todos')">Todos</button>
-<button class="tab" data-cat="caballero" onclick="filtrarCat('caballero')">Caballero</button>
-<button class="tab" data-cat="dama" onclick="filtrarCat('dama')">Dama</button>
-<button class="tab" data-cat="niños" onclick="filtrarCat('niños')">Niños</button>
-</div>
-<div id="v-productos" class="product-grid"></div>
+  <div class="header"><h1>🛒 Vender</h1></div>
+  <div class="search-bar"><input type="text" id="v-buscar" placeholder="Buscar producto..." oninput="buscarProducto()"></div>
+  <div class="tabs"><button class="tab active" data-cat="todos" onclick="filtrarCat('todos')">Todos</button><button class="tab" data-cat="caballero" onclick="filtrarCat('caballero')">Caballero</button><button class="tab" data-cat="dama" onclick="filtrarCat('dama')">Dama</button><button class="tab" data-cat="unisex" onclick="filtrarCat('unisex')">Unisex</button></div>
+  <div id="v-productos" class="product-grid"></div>
 </div>
 
+<!-- CART PANEL -->
+<div id="cart-panel" class="cart-panel">
+  <div class="cart-header"><h3>🛒 Carro</h3><button onclick="toggleCart()">✕</button></div>
+  <div id="cart-items"></div>
+  <div class="cart-footer">
+    <div class="cart-total-row">Total: <span id="cart-total">$0</span></div>
+    <div class="cart-actions">
+      <button class="btn-pay" onclick="pagar('efectivo')">💵 Efectivo</button>
+      <button class="btn-pay" onclick="pagar('transferencia')">📱 Transferencia</button>
+      <button class="btn-pay" onclick="pagar('tarjeta')">💳 Tarjeta</button>
+      <button class="btn-pay btn-credito" onclick="pagar('credito')">📝 Fiado</button>
+    </div>
+  </div>
+</div>
+<button id="cart-fab" class="cart-fab" onclick="toggleCart()">🛒<span id="cart-count">0</span></button>
+
+<!-- PRODUCTOS -->
 <div id="mod-productos" class="module">
-<div class="search-box">
-<input type="text" id="p-buscar" placeholder="Buscar producto..." oninput="filtrarProductos()">
-</div>
-<button class="btn" onclick="showModalProducto()">➕ Nuevo Producto</button>
-<div id="p-lista"></div>
+  <div class="header"><h1>📦 Productos</h1><button class="btn-primary" onclick="showModalProducto()">➕ Nuevo</button></div>
+  <div class="search-bar"><input type="text" id="p-buscar" placeholder="Buscar..." oninput="filtrarProductos()"></div>
+  <div id="p-lista"></div>
 </div>
 
+<!-- MODAL PRODUCTO -->
+<div id="modal-producto" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><h3 id="modal-producto-title">Nuevo Producto</h3><button onclick="closeModal('modal-producto')">✕</button></div>
+    <div class="modal-body">
+      <input type="text" id="prod-nombre" placeholder="Nombre *">
+      <input type="text" id="prod-marca" placeholder="Marca">
+      <input type="number" id="prod-precio" placeholder="Precio *">
+      <input type="number" id="prod-stock" placeholder="Stock *">
+      <select id="prod-cat"><option value="caballero">Caballero</option><option value="dama">Dama</option><option value="unisex">Unisex</option></select>
+      <div id="prod-foto-preview" style="display:none"><img id="prod-foto-img" src="" style="max-width:100%;border-radius:8px"></div>
+      <input type="file" id="prod-foto-input" accept="image/*" style="display:none" onchange="cargarFotoProducto(this)">
+      <button class="btn-secondary" onclick="document.getElementById('prod-foto-input').click()">📷 Cargar Foto</button>
+    </div>
+    <div class="modal-footer"><button class="btn-primary" onclick="guardarProducto()">💾 Guardar</button></div>
+  </div>
+</div>
+
+<!-- INVENTARIO -->
 <div id="mod-inventario" class="module">
-<div class="tabs">
-<button class="tab active" data-tab="stock" onclick="switchInvTab('stock')">Stock</button>
-<button class="tab" data-tab="mov" onclick="switchInvTab('mov')">Movimientos</button>
-</div>
-<div id="inv-stock-content">
-<div class="search-box">
-<input type="text" id="inv-buscar" placeholder="Buscar producto..." oninput="filtrarInventario()">
-</div>
-<div id="inv-lista"></div>
-</div>
-<div id="inv-mov-content" style="display:none">
-<div id="mov-lista"></div>
-</div>
+  <div class="header"><h1>📊 Inventario</h1></div>
+  <div class="tabs"><button class="tab active" data-tab="stock" onclick="switchInvTab('stock')">Stock</button><button class="tab" data-tab="mov" onclick="switchInvTab('mov')">Movimientos</button></div>
+  <div class="search-bar"><input type="text" id="inv-buscar" placeholder="Buscar..." oninput="filtrarInventario()"></div>
+  <div id="inv-stock-content"><div id="inv-lista"></div></div>
+  <div id="inv-mov-content" style="display:none"><div id="mov-lista"></div></div>
 </div>
 
+<!-- VENTAS -->
 <div id="mod-ventas" class="module">
-<div id="ventas-lista"></div>
+  <div class="header"><h1>💰 Ventas</h1></div>
+  <div id="ventas-lista"></div>
 </div>
 
+<!-- CLIENTES -->
 <div id="mod-clientes" class="module">
-<button class="btn" onclick="showModal('modal-cliente')">➕ Nuevo Cliente</button>
-<div id="clientes-lista"></div>
+  <div class="header"><h1>👥 Clientes</h1><button class="btn-primary" onclick="showModal('modal-cliente')">➕ Nuevo</button></div>
+  <div id="clientes-lista"></div>
 </div>
 
+<!-- MODAL CLIENTE -->
+<div id="modal-cliente" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><h3>Nuevo Cliente</h3><button onclick="closeModal('modal-cliente')">✕</button></div>
+    <div class="modal-body">
+      <input type="text" id="cli-nombre" placeholder="Nombre *">
+      <input type="text" id="cli-telefono" placeholder="Teléfono">
+    </div>
+    <div class="modal-footer"><button class="btn-primary" onclick="guardarCliente()">💾 Guardar</button></div>
+  </div>
+</div>
+
+<!-- DEUDAS -->
 <div id="mod-deudas" class="module">
-<div class="tabs">
-<button class="tab active" data-tab="activas" onclick="switchDeudaTab('activas')">Activas</button>
-<button class="tab" data-tab="historial" onclick="switchDeudaTab('historial')">Historial</button>
-</div>
-<div id="deudas-activas-content">
-<div id="deudas-lista"></div>
-</div>
-<div id="deudas-historial-content" style="display:none">
-<div id="deudas-historial-lista"></div>
-</div>
+  <div class="header"><h1>📝 Fiados</h1></div>
+  <div class="tabs"><button class="tab active" data-tab="activas" onclick="switchDeudaTab('activas')">Activas</button><button class="tab" data-tab="historial" onclick="switchDeudaTab('historial')">Historial</button></div>
+  <div id="deudas-activas-content"><div id="deudas-lista"></div></div>
+  <div id="deudas-historial-content" style="display:none"><div id="deudas-historial-lista"></div></div>
 </div>
 
+<!-- MODAL CREDITO -->
+<div id="modal-credito" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><h3>📝 Fiado</h3><button onclick="closeModal('modal-credito')">✕</button></div>
+    <div class="modal-body">
+      <p>Total: <strong id="credito-total">$0</strong></p>
+      <select id="credito-cliente"><option value="">Seleccionar cliente...</option></select>
+      <label>Cuotas (1-12): <input type="number" id="credito-cuotas" value="1" min="1" max="12" onchange="actualizarCuotaPreview()"></label>
+      <p id="cuota-preview"></p>
+    </div>
+    <div class="modal-footer"><button class="btn-primary" onclick="confirmarCredito()">✅ Confirmar Fiado</button></div>
+  </div>
+</div>
+
+<!-- MODAL DETALLE -->
+<div id="modal-detalle" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><h3>Detalle</h3><button onclick="closeModal('modal-detalle')">✕</button></div>
+    <div class="modal-body" id="detalle-content"></div>
+  </div>
+</div>
+
+<!-- MODAL DEUDA DETALLE -->
+<div id="modal-deuda-detalle" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><h3>Pago de Deuda</h3><button onclick="closeModal('modal-deuda-detalle')">✕</button></div>
+    <div class="modal-body">
+      <p><strong>Cliente:</strong> <span id="deuda-cliente"></span></p>
+      <p><strong>Total:</strong> <span id="deuda-total"></span></p>
+      <p><strong>Pendiente:</strong> <span id="deuda-pendiente"></span></p>
+      <p><strong>Cuotas:</strong> <span id="deuda-cuotas"></span></p>
+      <p><strong>Próx. Venc:</strong> <span id="deuda-prox-venc"></span></p>
+      <hr>
+      <input type="number" id="deuda-pago" placeholder="Monto a pagar">
+      <p id="deuda-pago-sugerido"></p>
+      <select id="deuda-metodo-pago"><option value="efectivo">Efectivo</option><option value="transferencia">Transferencia</option><option value="tarjeta">Tarjeta</option></select>
+      <div id="deuda-pagos-lista"></div>
+    </div>
+    <div class="modal-footer"><button class="btn-primary" onclick="registrarPagoDeuda()">💵 Registrar Pago</button></div>
+  </div>
+</div>
+
+<!-- CATÁLOGO -->
 <div id="mod-catalogo" class="module">
-<div class="catalogo-paginacion">
-<button class="cat-page-btn" onclick="catAnterior()">‹</button>
-<span id="cat-page-info">1 / 1</span>
-<button class="cat-page-btn" onclick="catSiguiente()">›</button>
-</div>
-<div class="catalogo-slide-container" id="cat-slide-container">
-<div class="catalogo-pages-wrapper" id="catalogo-pages-wrapper"></div>
-</div>
+  <div class="header"><h1>🌸 Catálogo</h1></div>
+  <div id="cat-slide-container" class="catalogo-slider">
+    <div id="catalogo-pages-wrapper"></div>
+  </div>
+  <div class="catalogo-nav">
+    <button onclick="catAnterior()">◀</button>
+    <span id="cat-page-info">0 / 0</span>
+    <button onclick="catSiguiente()">▶</button>
+  </div>
 </div>
 
 </main>
-
-<div id="cart-fab" class="cart-fab" onclick="toggleCart()" style="display:none">
-🛒<span id="cart-count">0</span>
-</div>
-
-<div id="cart-panel" class="cart-panel">
-<div class="cart-header">
-<h3>Carro de Compra</h3>
-<span class="close-btn" onclick="toggleCart()">×</span>
-</div>
-<div id="cart-items"></div>
-<div class="cart-total">
-<span>Total:</span><span id="cart-total">$0</span>
-</div>
-<button class="btn" onclick="pagar('efectivo')">💵 Efectivo</button>
-<button class="btn btn-secondary" onclick="pagar('transferencia')">📱 Transferencia</button>
-<button class="btn btn-secondary" onclick="pagar('tarjeta')">💳 Tarjeta</button>
-<button class="btn btn-secondary" onclick="pagar('credito')">📝 Fiado</button>
-</div>
-
-<div id="modal-cliente" class="modal">
-<div class="modal-content">
-<div class="modal-header">
-<h3>Nuevo Cliente</h3>
-<span class="close-btn" onclick="closeModal('modal-cliente')">×</span>
-</div>
-<input type="text" id="cli-nombre" placeholder="Nombre completo">
-<input type="text" id="cli-telefono" placeholder="Telefono (opcional)">
-<button class="btn" onclick="guardarCliente()">Guardar Cliente</button>
-</div>
-</div>
-
-<div id="modal-producto" class="modal">
-<div class="modal-content">
-<div class="modal-header">
-<h3 id="modal-producto-title">Nuevo Producto</h3>
-<span class="close-btn" onclick="closeModal('modal-producto')">×</span>
-</div>
-<div class="foto-upload" id="prod-foto-preview" style="display:none">
-<img id="prod-foto-img" src="">
-</div>
-<input type="file" id="prod-foto-input" accept="image/*" style="display:none" onchange="cargarFotoProducto(this)">
-<button class="btn btn-secondary" onclick="document.getElementById('prod-foto-input').click()">📷 Agregar Foto</button>
-<input type="text" id="prod-nombre" placeholder="Nombre del producto">
-<input type="text" id="prod-marca" placeholder="Marca (opcional)">
-<input type="text" id="prod-precio" placeholder="Precio (ej: 25000)">
-<input type="number" id="prod-stock" placeholder="Stock inicial" min="0">
-<select id="prod-cat">
-<option value="caballero">Caballero</option>
-<option value="dama">Dama</option>
-<option value="niños">Niños</option>
-</select>
-<button class="btn" onclick="guardarProducto()">Guardar Producto</button>
-</div>
-</div>
-
-<div id="modal-credito" class="modal">
-<div class="modal-content">
-<div class="modal-header">
-<h3>Fiado / Credito</h3>
-<span class="close-btn" onclick="closeModal('modal-credito')">×</span>
-</div>
-<p><strong>Total:</strong> <span id="credito-total">$0</span></p>
-<select id="credito-cliente">
-<option value="">Seleccionar cliente...</option>
-</select>
-<label>Numero de cuotas (1-12)</label>
-<input type="number" id="credito-cuotas" min="1" max="12" value="1" onchange="actualizarCuotaPreview()">
-<p id="cuota-preview" style="margin:10px 0;font-weight:700;color:var(--turquesa-dark)">1 pago de $0</p>
-<button class="btn" onclick="confirmarCredito()">Confirmar Fiado</button>
-</div>
-</div>
-
-<div id="modal-detalle" class="modal">
-<div class="modal-content">
-<div class="modal-header">
-<h3>Detalle</h3>
-<span class="close-btn" onclick="closeModal('modal-detalle')">×</span>
-</div>
-<div id="detalle-content"></div>
-</div>
-</div>
-
-<div id="modal-deuda-detalle" class="modal">
-<div class="modal-content">
-<div class="modal-header">
-<h3>Detalle de Deuda</h3>
-<span class="close-btn" onclick="closeModal('modal-deuda-detalle')">×</span>
-</div>
-<div class="deuda-mini">
-<p><strong>Cliente:</strong> <span id="deuda-cliente"></span></p>
-<p><strong>Total:</strong> <span id="deuda-total"></span></p>
-<p><strong>Pendiente:</strong> <span id="deuda-pendiente"></span></p>
-<p><strong>Cuotas:</strong> <span id="deuda-cuotas"></span></p>
-<p><strong>Prox vencimiento:</strong> <span id="deuda-prox-venc"></span></p>
-</div>
-<div id="deuda-pagos-lista"></div>
-<hr style="margin:16px 0;border:none;border-top:1px solid var(--gris-borde)">
-<p id="deuda-pago-sugerido" style="font-weight:700;color:var(--turquesa-dark)"></p>
-<input type="number" id="deuda-pago" placeholder="Monto a pagar">
-<select id="deuda-metodo-pago">
-<option value="efectivo">Efectivo</option>
-<option value="transferencia">Transferencia</option>
-<option value="tarjeta">Tarjeta</option>
-</select>
-<button class="btn" onclick="registrarPagoDeuda()">Registrar Pago</button>
-</div>
-</div>
-
-<div id="toast" class="toast"></div>
-
-</div>
 
 <script src="app.js"></script>
 </body>

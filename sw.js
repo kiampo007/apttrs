@@ -1,1 +1,33 @@
-const CACHE_NAME='dulces-aromas-v1';const urlsToCache=['./','./index.html','./app.js','./style.css','./productos.json','./manifest.json'];self.addEventListener('install',function(e){e.waitUntil(caches.open(CACHE_NAME).then(function(c){return c.addAll(urlsToCache)}))});self.addEventListener('fetch',function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request)}))});self.addEventListener('activate',function(e){e.waitUntil(caches.keys().then(function(c){return Promise.all(c.map(function(n){if(n!==CACHE_NAME)return caches.delete(n)}))}))});
+const CACHE_NAME = 'dulces-aromas-v1';
+const urlsToCache = [
+  './',
+  './index.html',
+  './style.css',
+  './app.js',
+  './productos.json',
+  './manifest.json'
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+  );
+});
+
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request);
+    })
+  );
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.filter(name => name !== CACHE_NAME).map(name => caches.delete(name))
+      );
+    })
+  );
+});
